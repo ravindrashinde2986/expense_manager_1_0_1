@@ -1,0 +1,307 @@
+{% extends 'base.html'%}
+{% block content%}
+
+<!-- /.container-fluid -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Expenses</h1>
+
+    <!-- Data Table  -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+             <div class="row">
+                 <div class="col-sm-10">
+                     <h6 class="m-0 font-weight-bold text-primary">Expenses</h6>
+                 </div>
+                 <div class="col-sm-2">
+                     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#AddExpenseModal">
+                         <i class="fas fa-solid fa-plus fa-sm text-white-50"></i>
+                          Add Expense
+                     </a>
+                 </div>
+             </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Expense date</th>
+                            <th>Edit / Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in range(0, len)%}
+                        <tr>
+                            <td>{{i+1}}</td>
+                            <td>{{data[i][1]}}</td>
+                            <td>{{data[i][3]}}</td>
+                            <td>{{data[i][4]}}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-xs-6 ml-2">
+                                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                                           data-toggle="modal" data-target="#EditExpenseModal"
+                                           data-expenseid="{{data[i][0]}}"
+                                           data-categoryid="{{data[i][2]}}"
+                                           data-amount="{{data[i][3]}}"
+                                           data-expensedate="{{data[i][4]}}">
+                                            <i class="fas fa-edit fa-sm text-white-20"></i>
+                                        Edit
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-6 ml-2">
+                                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                                           data-toggle="modal" data-target="#DeleteExpenseModal"
+                                           data-expenseid="{{data[i][0]}}">
+                                            <i class="fas fa-edit fa-sm text-white-20"></i>
+                                        Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block nav_items %}
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('dashboard_bp.dashboard') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+<li class="nav-item active">
+    <a class="nav-link" href="{{ url_for('expenses_bp.expenses') }}">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Expenses</span></a>
+</li>
+{% endblock %}
+
+{% block page_level_custom_scripts_and_plugins %}
+<!-- Add Modal-->
+<div class="modal fade" id="AddExpenseModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Expense</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="user" id="AddExpenseModalForm" method="POST" action="{{url_for('expenses_bp.add_expense')}}">
+                    <div class="form-group row">
+                        <div class="col-sm-4">
+                             <label for="select-box1" class="label select-box1">
+                                 <span class="m-0 font-weight-bold text-primary">Select Category:</span>
+                             </label>
+                        </div>
+                        <div class="col-sm-8 ">
+                            <select id="select-box1" class="select form-control" name="Category">
+                                {% for category in categories %}
+                                    <option value="{{ category['id']}}">{{ category['name']}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="form-group row">
+                        <div class="col-sm-4">
+                             <label for="select-box1" class="label select-box1">
+                                    <span class="m-0 font-weight-bold text-primary">Amount:</span>
+                                </label>
+                        </div>
+                        <div class="col-sm-8 ">
+                                <input type="text" class="form-control" id="amount"
+                            placeholder="Amount" name="Amount" required>
+<!--                            teestst-->
+
+                        </div>
+
+                    </div>
+                    <div class="dropdown-divider"></div>
+                        <div class="form-group row">
+                        <div class="col-sm-4">
+                             <label for="select-box1" class="label select-box1">
+                                 <span class="m-0 font-weight-bold text-primary">Expense date:</span>
+                             </label>
+                        </div>
+                        <div class="col-sm-8 ">
+                            <input type="date" class="form-control" id="ExpenseDate" placeholder="ExpenseDate" name="ExpenseDate" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                 <div class="form-group row">
+                     <div class="col-sm-6 mb-3 mb-sm-0">
+                            <button class="btn btn-primary btn-user btn-block" type="submit" form="AddExpenseModalForm">Save</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary btn-user btn-block" type="button" data-dismiss="modal">Cancel</button>
+                        </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Edit Modal-->
+<div class="modal fade" id="EditExpenseModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditExpenseModalLabel">Add Expense</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="user" id="EditExpenseModalForm" method="POST" action="{{url_for('expenses_bp.modify_expense')}}">
+                    <input type="hidden" id="EditExpenseId" name="expense_id">
+                    <div class="form-group row">
+                        <div class="col-sm-4">
+                             <label for="select-box1" class="label select-box1">
+                                    <span class="m-0 font-weight-bold text-primary">Select Category:</span>
+                                </label>
+                        </div>
+                        <div class="col-sm-8 ">
+                                <select id="EditExpenseCategory" class="select form-control" name="Category">
+                                    {% for category in categories %}
+                                        <option value="{{ category['id']}}">{{ category['name']}}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="form-group row">
+                        <div class="col-sm-4">
+                             <label for="select-box1" class="label select-box1">
+                                    <span class="m-0 font-weight-bold text-primary">Amount:</span>
+                                </label>
+                        </div>
+                        <div class="col-sm-8 ">
+                                <input type="text" class="form-control" id="EditExpenseAmount"
+                            placeholder="Amount" name="Amount" required>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                        <div class="form-group row">
+                        <div class="col-sm-4">
+                             <label for="select-box1" class="label select-box1">
+                                    <span class="m-0 font-weight-bold text-primary">Expense date:</span>
+                                </label>
+                        </div>
+                        <div class="col-sm-8 ">
+                                <input type="date" class="form-control" id="EditExpenseDate"
+                            placeholder="yyyy-mm-dd" name="ExpenseDate" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                 <div class="form-group row">
+                     <div class="col-sm-6 mb-3 mb-sm-0">
+                            <button class="btn btn-primary btn-user btn-block" type="submit" form="EditExpenseModalForm">Save</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary btn-user btn-block" type="button" data-dismiss="modal">Cancel</button>
+                        </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Delete Expense Modal-->
+<div class="modal fade" id="DeleteExpenseModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DelModalLabel">Do you really want to delete?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="user" id="DeleteExpenseModalForm" method="POST" action="{{url_for('expenses_bp.delete_expense')}}">
+                    <input type="hidden" id="DeleteExpenseId" name="expense_id">
+                        <div> Are you sure you want to delete the expense entry ?</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button class="btn btn-primary btn-user btn-block" form="DeleteExpenseModalForm" type="submit" >Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+  var date = new Date();
+  var day = date.getDate();
+  var month = date.getMonth() + 1;
+  var year = date.getFullYear();
+
+  if (month < 10) month = "0" + month;
+  if (day < 10) day = "0" + day;
+
+  var today = year + "-" + month + "-" + day;
+
+  document.getElementById("ExpenseDate").value = today;
+
+<!--  $('#AddExpenseModal').on('show.bs.modal', function (event) {-->
+<!--  $(this).find("#ExpenseDate").val(new Date().toDateInputValue());-->
+<!--});-->
+</script>
+
+<script type="text/javascript">
+  $('#EditExpenseModal').on('show.bs.modal', function (event) {
+  var amount = $(event.relatedTarget).data('amount');
+  var expenseDate = $(event.relatedTarget).data('expensedate');
+  var categoryId= $(event.relatedTarget).data('categoryid');
+  var expenseId = $(event.relatedTarget).data('expenseid');
+  $(this).find("#EditExpenseAmount").val(amount);
+  $(this).find("#EditExpenseDate").val(expenseDate);
+  $(this).find("#EditExpenseCategory").val(categoryId);
+  $(this).find("#EditExpenseId").val(expenseId);
+});
+</script>
+
+<script type="text/javascript">
+  $('#DeleteExpenseModal').on('show.bs.modal', function (event) {
+  var expenseId = $(event.relatedTarget).data('expenseid');
+  $(this).find("#DeleteExpenseId").val(expenseId);
+});
+</script>
+<!-- Page level plugins -->
+<script src="../../static/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="../../static/js/datatables.js"></script>
+{% endblock %}
