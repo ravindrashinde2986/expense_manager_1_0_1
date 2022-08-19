@@ -61,7 +61,7 @@ Dashboard will provide annual month wise expenses along with categorized expense
     ~~~
     CREATE DATABASE expense_mgr_db;
     ~~~
-* Go to **_src_/\__init\__.py** and search for **app.config['SQLALCHEMY_DATABASE_URI']** and changes it's values to "postgresql://**<your db user>**:**<password>**@localhost:**<db_port_number>**/expense_mgr_db"
+* Go to **_src_/\__init\__.py** and search for **app.config['SQLALCHEMY_DATABASE_URI']** and changes it's values to "postgresql://**<*your_db_user>**:**<*password>**@localhost:**<*db_port_number>**/expense_mgr_db"
 
 ## Part 3 : Run Migration (Create db schema)
 
